@@ -1,70 +1,147 @@
-# Getting Started with Create React App
+# Speak Easy – AI Conversation Practice
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Speak Easy is a full-stack AI-powered conversation practice tool. It helps users improve their communication skills by simulating real-life conversations (interviews, networking, dating, public speaking, etc.) with customizable AI personalities and difficulty levels. Users receive real-time feedback on confidence, filler words, sentence structure, and areas to improve.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- Scenarios – Job interview, networking, dating, conflict resolution, public speaking, etc.  
+- AI Personalities – Tough interviewer, friendly colleague, skeptical questioner, empathetic listener, and more.  
+- Difficulty Levels – Beginner, Intermediate, Advanced (affects AI strictness and prompts).  
+- Real-Time Feedback – Confidence score, strengths, and areas to improve.  
+- Retry / Next Options – Encourage reattempts if score < 90, otherwise move forward.  
+- Theming – Dark theme with pink accents for a modern look.  
+- Deployment Ready – Built with Create React App, serverless API proxy via Vercel.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Project Structure
 
-### `npm test`
+ai-conversation-practice/
+│
+├── api/
+│ └── chat.js # Vercel serverless function (proxy to Groq API)
+│
+├── public/
+│ └── index.html # CRA entrypoint
+│
+├── src/
+│ ├── components/ # React components
+│ │ ├── ScenarioSelector.js
+│ │ ├── ConversationInterface.js
+│ │ ├── FeedbackPanel.js
+│ │ ├── ProgressTracker.js
+│ │ └── ...
+│ ├── styles/
+│ │ └── components.css # Global + component styles
+│ ├── utils/
+│ │ └── aiEngine.js # Calls /api/chat
+│ ├── App.js # Main app component
+│ ├── index.js # React entrypoint
+│ └── index.css
+│
+├── package.json
+├── package-lock.json
+├── vercel.json # SPA rewrites for Vercel
+└── README.md
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Prerequisites
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Node.js v18 or later  
+- npm (comes with Node)  
+- Git  
+- Vercel account (for deployment)  
+- Groq API Key (starts with gsk_...)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## Setup and Installation
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+1. Clone the repo:
+   ```bash
+   git clone https://github.com/<your-username>/ai-conversation-practice.git
+   cd ai-conversation-practice
+npm install
+2. Install dependencies:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+    npm install
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+3. Environment variables:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+    Create a .env.local file at project root for local dev:
 
-## Learn More
+        REACT_APP_GROQ_API_KEY=your_groq_api_key_here
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+    In production, only GROQ_API_KEY will be used in serverless function.
 
-### Code Splitting
+4. Run locally:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+    npm start
 
-### Analyzing the Bundle Size
+# Deployment on Vercel
+Step 1: Push to GitHub
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git push -u origin main
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Step 2: Import Repo into Vercel
 
-### Making a Progressive Web App
+Go to https://vercel.com/dashboard
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Click New Project → Import GitHub repository
 
-### Advanced Configuration
+Choose ai-conversation-practice
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Step 3: Configure Build Settings
 
-### Deployment
+Framework Preset: Create React App
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Build Command: npm run build
 
-### `npm run build` fails to minify
+Output Directory: build
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Step 4: Environment Variables
+
+In Vercel Dashboard → Project → Settings → Environment Variables:
+
+GROQ_API_KEY=your_groq_api_key
+
+
+Apply to Production and Preview environments.
+
+Step 5: Add SPA Rewrite Rules
+
+Create vercel.json in repo root:
+
+{
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
+
+
+Commit and push this file to GitHub.
+
+Step 6: Deploy
+
+Click Deploy in Vercel
+
+When complete, you will get a live URL such as:
+https://ai-conversation-practice.vercel.app
+
+# Future Improvements
+
+Add more scenarios (customer support, sales calls, debates).
+
+Store user progress with a backend database.
+
+Voice input/output integration with speech-to-text and text-to-speech.
+
+Adaptive scoring system for personalized learning.
