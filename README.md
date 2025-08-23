@@ -51,30 +51,31 @@ This README is a complete, copy‑paste friendly guide that takes you from zero 
 ai-conversation-practice/
 │
 ├── api/
-│ └── chat.js
+│   └── chat.js
 │
 ├── public/
-│ └── index.html
+│   └── index.html
 │
 ├── src/
-│ ├── components/
-│ │ ├── ScenarioSelector.js
-│ │ ├── ConversationInterface.js
-│ │ ├── FeedbackPanel.js
-│ │ ├── ProgressTracker.js
-│ │ └── ...
-│ ├── styles/
-│ │ └── components.css
-│ ├── utils/
-│ │ └── aiEngine.js 
-│ ├── App.js
-│ ├── index.js
-│ └── index.css
+│   ├── components/
+│   │   ├── ScenarioSelector.js
+│   │   ├── ConversationInterface.js
+│   │   ├── FeedbackPanel.js
+│   │   ├── ProgressTracker.js
+│   │   └── ...
+│   ├── styles/
+│   │   └── components.css
+│   ├── utils/
+│   │   └── aiEngine.js
+│   ├── App.js
+│   ├── index.js
+│   └── index.css
 │
+├── vercel.json
 ├── package.json
 ├── package-lock.json
-├── vercel.json 
 └── README.md
+
 
 
 Important: `api/chat.js` must be at the repository root inside `/api`. Do not put it under `src/`.
