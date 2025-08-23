@@ -1,8 +1,8 @@
-Speak Easy – AI Conversation Practice
+## Speak Easy – AI Conversation Practice
 
 Speak Easy is a full-stack AI-powered conversation practice tool. It helps users improve their communication skills by simulating real-life conversations such as interviews, networking, dating, conflict resolution, and public speaking. Users can select scenarios, choose an AI personality, pick a difficulty level (beginner, intermediate, advanced), and receive real-time feedback on their communication style. Feedback includes confidence scoring, strengths, areas to improve, and retry or next options.
 
-1) Features
+## 1) Features
 
 Scenarios: job interview, networking, first date, family conflict, presentation Q&A, social anxiety practice, and more.
 
@@ -18,7 +18,7 @@ Secure API: Groq API key is kept private using a Vercel serverless proxy.
 
 Deployment Ready: built with Create React App and configured for deployment on Vercel.
 
-2) Prerequisites
+## 2) Prerequisites
 
 Node.js v18 or later
 
@@ -30,7 +30,7 @@ Vercel account (for deployment)
 
 Groq API Key (starts with gsk_)
 
-3) Project Structure
+## 3) Project Structure
 
 ai-conversation-practice/
 api/
@@ -58,7 +58,7 @@ README.md
 
 Important: api/chat.js must be at the repository root inside api. Do not put it under src/.
 
-4) Setup and Installation
+## 4) Setup and Installation
 
 Clone the repository from GitHub
 git clone https://github.com/
@@ -79,7 +79,7 @@ Start the development server
 npm start
 This will run the project locally at http://localhost:3000
 
-5) API Proxy
+## 5) API Proxy
 
 The app does not expose your Groq API key directly to the browser. Instead, it uses a serverless function in Vercel.
 
@@ -89,13 +89,13 @@ This file handles POST requests, sends them to the Groq API using your private k
 
 Important: This file must always be under the root-level api/ folder so Vercel can recognize it as a serverless function.
 
-6) Frontend AI Engine
+## 6) Frontend AI Engine
 
 The frontend does not call Groq directly. Instead, it sends the conversation messages to /api/chat, which securely proxies the request.
 
 src/utils/aiEngine.js is responsible for making this call.
 
-7) Deployment on Vercel
+## 7) Deployment on Vercel
 
 Step 1: Push to GitHub
 
@@ -147,7 +147,7 @@ Click Deploy in Vercel
 
 After build completes, you will get a live URL such as https://ai-conversation-practice.vercel.app
 
-8) Troubleshooting
+## 8) Troubleshooting
 
 404 not found after deployment: check that vercel.json exists and Output Directory is set to build.
 
@@ -159,7 +159,7 @@ Local works but production does not: redeploy after adding environment variables
 
 Git push errors: if your GitHub repo was created with a README, use git push -u origin main --force to overwrite.
 
-9) Future Improvements
+## 9) Future Improvements
 
 Add more conversation scenarios such as customer support, sales, and debates.
 
@@ -169,6 +169,6 @@ Add speech-to-text and text-to-speech for voice practice.
 
 Implement adaptive scoring that adjusts difficulty automatically.
 
-10) License
+## 10) License
 
 MIT License © 2025 Rajasrivatsan Srinivasan
