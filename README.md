@@ -63,10 +63,13 @@ ai-conversation-practice/
 │   │   ├── FeedbackPanel.js
 │   │   ├── ProgressTracker.js
 │   │   └── ...
+│   │
 │   ├── styles/
 │   │   └── components.css
+│   │
 │   ├── utils/
 │   │   └── aiEngine.js
+│   │
 │   ├── App.js
 │   ├── index.js
 │   └── index.css
@@ -75,6 +78,7 @@ ai-conversation-practice/
 ├── package.json
 ├── package-lock.json
 └── README.md
+
 
 
 
