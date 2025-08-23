@@ -1,52 +1,36 @@
-# Speak Easy – AI Conversation Practice
+Speak Easy – AI Conversation Practice
 
-Speak Easy is a full‑stack, production‑deployable web app that lets you practice realistic conversations in a safe environment. You pick a scenario (job interview, networking, first date, difficult conversation, etc.), choose an AI personality (tough, friendly, skeptical, empathetic, and more), select your difficulty level (beginner, intermediate, advanced), and then chat. While you talk, you get real‑time feedback on confidence, filler words, structure, strengths, and areas to improve. The app uses a secure serverless proxy so your Groq API key never touches the browser.
+Speak Easy is a full-stack AI-powered conversation practice tool. It helps users improve their communication skills by simulating real-life conversations such as interviews, networking, dating, conflict resolution, and public speaking. Users can select scenarios, choose an AI personality, pick a difficulty level (beginner, intermediate, advanced), and receive real-time feedback on their communication style. Feedback includes confidence scoring, strengths, areas to improve, and retry or next options.
 
-This README is a complete, copy‑paste friendly guide that takes you from zero to deployed on Vercel. It includes setup, commands for Windows/macOS/Linux, deployment, environment variables, file structure, customization, and troubleshooting.
+1) Features
 
----
+Scenarios: job interview, networking, first date, family conflict, presentation Q&A, social anxiety practice, and more.
 
-## Table of Contents
+AI Personalities: tough interviewer, friendly colleague, professional, skeptical questioner, supportive mentor, intimidating authority, chatty talker, empathetic listener.
 
-1. Overview and Architecture  
-2. Prerequisites  
-3. Project Structure  
-4. Quick Start (Local Development)  
-5. Environment Variables  
-6. API Proxy (Serverless)  
-7. Frontend AI Engine  
-8. Build for Production (Local)  
-9. Deploy to Vercel (Step‑by‑Step)  
-10. Post‑Deploy Checks  
-11. Troubleshooting and Common Errors  
-12. Customization (Scenarios, Personalities, Difficulty, Theme, Title)  
-13. Git and Windows CRLF Notes  
-14. Security Notes  
-15. FAQ  
-16. License
+Difficulty Levels: beginner, intermediate, advanced, with different AI strictness.
 
----
+Real-Time Feedback: confidence level, strengths, areas to improve, retry option if score < 90.
 
-## 1) Overview and Architecture
+Modern Theming: black and pink theme with responsive design.
 
-- Frontend: React (Create React App). All UI, conversation flow, feedback panels, selectors, and theming live under `src/`.
-- Backend: Vercel Serverless Function under `api/chat.js`. It proxies requests to the Groq Chat Completions API so your API key remains private.
-- Communication: Frontend calls `POST /api/chat` with `messages`. The serverless function reads `GROQ_API_KEY` from environment variables on Vercel, calls Groq, returns the response to the browser.
-- Deployment: Vercel builds the React app, deploys static assets from `build/`, and serves serverless functions from `/api/*`.
+Secure API: Groq API key is kept private using a Vercel serverless proxy.
 
----
+Deployment Ready: built with Create React App and configured for deployment on Vercel.
 
-## 2) Prerequisites
+2) Prerequisites
 
-- Node.js v18+ and npm (https://nodejs.org/)
-- Git (https://git-scm.com/)
-- A GitHub account
-- A Vercel account (https://vercel.com/)
-- A Groq API key (starts with `gsk_...`) from https://console.groq.com/
+Node.js v18 or later
 
----
+npm (comes with Node)
 
-## 3) Project Structure
+Git installed locally
+
+Vercel account (for deployment)
+
+Groq API Key (starts with gsk_)
+
+3) Project Structure
 
 ai-conversation-practice/
 api/
@@ -72,347 +56,119 @@ package.json
 package-lock.json
 README.md
 
+Important: api/chat.js must be at the repository root inside api. Do not put it under src/.
 
+4) Setup and Installation
 
-
-
-Important: `api/chat.js` must be at the repository root inside `/api`. Do not put it under `src/`.
-
----
-
-## 4) Quick Start (Local Development)
-
-Clone the repository and install dependencies.
-
-Windows PowerShell / Command Prompt:
-```bat
-git clone https://github.com/<your-username>/ai-conversation-practice.git
+Clone the repository from GitHub
+git clone https://github.com/
+<your-username>/ai-conversation-practice.git
 cd ai-conversation-practice
+
+Install dependencies
 npm install
 
-macOS/Linux:
+Create a local environment file
 
-git clone https://github.com/<your-username>/ai-conversation-practice.git
-cd ai-conversation-practice
-npm install
+In the project root, create a file named .env.local
 
-Create a local environment file (optional for local if you directly call Groq via the serverless function; the serverless function can read the key from your shell if you run through a serverless emulator. For simplicity, local development usually mocks responses or you run without a key and test UI only. Production will use Vercel env vars.)
+Add the following line
+REACT_APP_GROQ_API_KEY=your_groq_api_key_here
 
-Start the dev server:
-
+Start the development server
 npm start
+This will run the project locally at http://localhost:3000
 
-Open http://localhost:3000
+5) API Proxy
 
-6) API Proxy (Serverless)
+The app does not expose your Groq API key directly to the browser. Instead, it uses a serverless function in Vercel.
 
-File: api/chat.js (exactly this path)
+api/chat.js
 
-// api/chat.js
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+This file handles POST requests, sends them to the Groq API using your private key, and returns the response back to the frontend.
 
-  try {
-    const { messages } = req.body;
+Important: This file must always be under the root-level api/ folder so Vercel can recognize it as a serverless function.
 
-    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: 'llama3-8b-8192',    // You may switch to a different Groq model
-        messages,                   // [{ role: 'system'|'user'|'assistant', content: '...' }, ...]
-        temperature: 0.7
-      })
-    });
+6) Frontend AI Engine
 
-    if (!r.ok) {
-      const text = await r.text();
-      return res.status(r.status).send(text);
-    }
+The frontend does not call Groq directly. Instead, it sends the conversation messages to /api/chat, which securely proxies the request.
 
-    const data = await r.json();
-    return res.status(200).json(data);
-  } catch (err) {
-    return res.status(500).json({ error: 'Server error', details: err.message });
-  }
-}
+src/utils/aiEngine.js is responsible for making this call.
 
+7) Deployment on Vercel
 
-Key points:
-
-Do not import this file from the client. The browser calls it as an HTTP endpoint at /api/chat.
-
-The function reads process.env.GROQ_API_KEY on Vercel. Do not hardcode secrets.
-
-7) Frontend AI Engine
-
-File: src/utils/aiEngine.js (example call shape; your project may already include a richer engine with real‑time feedback and fallbacks)
-
-export async function getAIResponse(messages) {
-  const res = await fetch('/api/chat', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ messages })
-  });
-
-  if (!res.ok) {
-    throw new Error(await res.text());
-  }
-
-  return res.json(); // { choices: [{ message: { role: 'assistant', content: '...' } }] }
-}
-
-
-Typical usage from a component:
-
-import { getAIResponse } from '../utils/aiEngine';
-
-async function askAssistant(userText, history) {
-  const messages = [
-    { role: 'system', content: 'You are a helpful conversation coach...' },
-    ...history,                         // array of { role, content }
-    { role: 'user', content: userText }
-  ];
-  const data = await getAIResponse(messages);
-  const reply = data?.choices?.[0]?.message?.content ?? 'Sorry, no reply.';
-  return reply;
-}
-
-8) Build for Production (Local)
-
-This step is optional but useful for verifying a production build locally.
-
-npm run build
-
-
-This creates a build/ folder. You can serve it locally with a static server:
-
-npx serve -s build
-
-
-Open the printed URL to test the static build.
-
-9) Deploy to Vercel (Step‑by‑Step)
-
-A) Push code to GitHub:
+Step 1: Push to GitHub
 
 git add .
-git commit -m "Initial commit: Speak Easy"
+
+git commit -m "Initial commit"
+
 git branch -M main
+
 git push -u origin main
 
-
-B) Import the repository into Vercel:
+Step 2: Import into Vercel
 
 Go to https://vercel.com/dashboard
 
-Click “New Project”
+Click New Project
 
-Choose the ai-conversation-practice repository to import
+Import your GitHub repository ai-conversation-practice
 
-C) Configure Build & Output:
+Step 3: Configure build settings
 
-Framework Preset: Create React App
+Framework preset: Create React App
 
-Build Command: npm run build
+Build command: npm run build
 
-Output Directory: build
+Output directory: build
 
-Root Directory: / (repo root)
-
-D) Add environment variable on Vercel:
-
-Go to Project → Settings → Environment Variables
-
+Step 4: Add environment variables
+In Vercel, go to your project → Settings → Environment Variables
 Add:
+GROQ_API_KEY=your_groq_api_key
 
-Name: GROQ_API_KEY
+Apply this variable to Production and Preview.
 
-Value: your key starting with gsk_...
-
-Environments: Production and Preview
-
-Save
-
-E) Add SPA rewrites (prevents 404 on refresh):
-Create vercel.json at the repo root:
-
+Step 5: Configure SPA routing
+Create a file named vercel.json in the root of your project and add:
 {
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/(.*)", "destination": "/index.html" }
-  ]
+"rewrites": [
+{ "source": "/api/(.)", "destination": "/api/$1" },
+{ "source": "/(.)", "destination": "/index.html" }
+]
 }
 
+This ensures React single-page app routes work correctly.
 
-Commit and push:
+Step 6: Deploy
 
-git add vercel.json
-git commit -m "Add SPA rewrites"
-git push
+Click Deploy in Vercel
 
+After build completes, you will get a live URL such as https://ai-conversation-practice.vercel.app
 
-F) Trigger deploy:
+8) Troubleshooting
 
-Vercel will automatically build and deploy on push
+404 not found after deployment: check that vercel.json exists and Output Directory is set to build.
 
-Or open project in Vercel → Deployments → Redeploy latest
+API errors (401 or 500): make sure GROQ_API_KEY is added in Vercel environment variables.
 
-10) Post‑Deploy Checks
+Blank page: confirm Root Directory in Vercel is set to the project root, not src.
 
-Open the Vercel URL shown on the deployment page. You should see your app’s home screen (not a 404 page).
+Local works but production does not: redeploy after adding environment variables.
 
-Open the browser DevTools → Network tab → start a conversation in the app → confirm there is a call to /api/chat.
+Git push errors: if your GitHub repo was created with a README, use git push -u origin main --force to overwrite.
 
-If the call fails:
+9) Future Improvements
 
-Open Vercel → Project → Deployments → select the deployment → Functions tab → check the serverless logs for the error (most common: missing GROQ_API_KEY).
+Add more conversation scenarios such as customer support, sales, and debates.
 
-11) Troubleshooting and Common Errors
+Store user progress in a backend database (Firebase, Postgres, or MongoDB).
 
-404 NOT_FOUND page after deploy
-Causes:
+Add speech-to-text and text-to-speech for voice practice.
 
-vercel.json is missing or not included in the latest build
+Implement adaptive scoring that adjusts difficulty automatically.
 
-Wrong “Root Directory” or wrong “Output Directory” in Vercel settings
+10) License
 
-Fix:
-
-Ensure vercel.json is at repo root, committed, and deployed
-
-Framework Preset: Create React App
-
-Build Command: npm run build
-
-Output Directory: build
-
-Root Directory: /
-
-API 401/403/500 errors
-Causes:
-
-GROQ_API_KEY not set or incorrect in Vercel env vars
-
-api/chat.js not at repoRoot/api/chat.js
-
-Request payload malformed
-
-Fix:
-
-Set GROQ_API_KEY in Vercel (Production + Preview)
-
-Move api/chat.js to the correct location
-
-Inspect Vercel “Functions” logs
-
-Git push rejected (remote contains work you do not have)
-Fix options:
-
-Merge:
-
-git pull origin main --allow-unrelated-histories
-git push -u origin main
-
-
-Replace remote contents (force):
-
-git push -u origin main --force
-
-
-Windows CRLF warnings
-Harmless. To silence:
-
-git config core.autocrlf true
-
-12) Customization
-
-A) Change the app title
-
-public/index.html → <title>Speak Easy</title>
-
-If you display a header title in App.js, update it there too.
-
-B) Scenarios and personalities
-
-Found in your src/data/scenarios.js or src/styles/scenarios.js depending on your file layout.
-
-You can add new scenarios by extending the scenarios object:
-
-export const scenarios = {
-  jobInterview: { title: "Job Interview", description: "...", questions: [ ... ] },
-  // Add your own
-  salesCall: { title: "Sales Call", description: "...", questions: [ ... ] }
-};
-
-
-Add new personalities by extending personalities similarly.
-
-C) Difficulty levels
-
-The selector is in ScenarioSelector.js (or in your updated selector file). Each level can influence:
-
-System prompt in aiEngine.js
-
-UI microcopy, time pressure, evaluation thresholds
-
-D) Show selected level in conversation header
-
-In ConversationInterface.js header section, ensure you display a “Level: Beginner/Intermediate/Advanced” badge if you haven’t already.
-
-E) Theme (black + pink)
-
-Styles live in src/styles/components.css. If your version has CSS variables at the top, you can quickly retheme by updating variables:
-
-:root {
-  --bg: #0c0c0f;
-  --panel: #121217;
-  --text: #f5f5f7;
-  --accent: #ff2d89;
-  --accent-2: #ff6fb1;
-  --muted: #a3a3ad;
-}
-
-
-Search for accent color usages and adjust as needed.
-
-F) Retry vs Next logic
-
-The FeedbackPanel can show “Retry” if score < 90; “Next” if score ≥ 90.
-
-Implement the callback props from FeedbackPanel to ConversationInterface to handle reset or advance to next scenario.
-
-13) Git and Windows CRLF Notes
-
-Line ending warnings are normal when switching between Windows and Unix environments.
-
-Recommended:
-
-git config --global core.autocrlf true
-
-
-Ensure .gitignore includes:
-
-node_modules/
-build/
-.env
-.env.*
-.vercel/
-
-
-If you see “remote origin already exists,” update the URL:
-
-git remote set-url origin https://github.com/<your-username>/ai-conversation-practice.git
-
-14) Security Notes
-
-Never expose GROQ_API_KEY in the frontend. Only the serverless function should access it via environment variables.
-
-Never commit .env* files.
-
-If you suspect your key leaked, regenerate it in the Groq console.
+MIT License © 2025 Rajasrivatsan Srinivasan
