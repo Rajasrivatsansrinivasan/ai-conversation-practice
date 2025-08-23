@@ -49,35 +49,29 @@ This README is a complete, copy‑paste friendly guide that takes you from zero 
 ## 3) Project Structure
 
 ai-conversation-practice/
-│
-├── api/
-│   └── chat.js
-│
-├── public/
-│   └── index.html
-│
-├── src/
-│   ├── components/
-│   │   ├── ScenarioSelector.js
-│   │   ├── ConversationInterface.js
-│   │   ├── FeedbackPanel.js
-│   │   ├── ProgressTracker.js
-│   │   └── ...
-│   │
-│   ├── styles/
-│   │   └── components.css
-│   │
-│   ├── utils/
-│   │   └── aiEngine.js
-│   │
-│   ├── App.js
-│   ├── index.js
-│   └── index.css
-│
-├── vercel.json
-├── package.json
-├── package-lock.json
-└── README.md
+api/
+api/chat.js
+public/
+public/index.html
+src/
+src/components/
+src/components/ScenarioSelector.js
+src/components/ConversationInterface.js
+src/components/FeedbackPanel.js
+src/components/ProgressTracker.js
+src/components/... (other component files)
+src/styles/
+src/styles/components.css
+src/utils/
+src/utils/aiEngine.js
+src/App.js
+src/index.js
+src/index.css
+vercel.json
+package.json
+package-lock.json
+README.md
+
 
 
 
